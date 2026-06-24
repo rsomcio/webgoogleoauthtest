@@ -185,3 +185,72 @@
   padding: 6px 8px;
   word-break: break-all;
 }
+
+/* Endpoint test panels */
+.endpoint-test {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.endpoint-test-desc {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.endpoint-test-btn {
+  align-self: flex-start;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 16px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #333;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.endpoint-test-btn:hover:not(:disabled) {
+  background: #f0f0f0;
+  border-color: #bbb;
+}
+
+.endpoint-test-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.endpoint-test-network-error {
+  font-size: 12px;
+  color: #ef4444;
+  margin: 0;
+}
+
+.endpoint-test-result {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.endpoint-test-status {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.endpoint-test-body {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #333;
+  background: #f4f4f5;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
