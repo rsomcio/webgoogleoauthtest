@@ -1,0 +1,187 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg, #f5f5f5);
+}
+
+.login-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.login-header {
+  text-align: center;
+}
+
+.login-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: #111;
+}
+
+.login-header p {
+  font-size: 15px;
+  color: #666;
+  margin: 0;
+}
+
+.google-btn-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.error {
+  font-size: 14px;
+  color: #d93025;
+  text-align: center;
+  margin: 0;
+}
+
+/* Logged-in profile */
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e8e8e8;
+}
+
+.profile h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: #111;
+}
+
+.email {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.logout-btn {
+  margin-top: 8px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background: #1a1a1a;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: #333;
+}
+
+/* JWT debug section */
+.jwt-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.jwt-section h3 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.jwt-token-box {
+  position: relative;
+  background: #f4f4f5;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.jwt-token-box pre {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #333;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  padding-right: 56px;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #555;
+  transition: background 0.15s;
+}
+
+.copy-btn:hover {
+  background: #f0f0f0;
+}
+
+.claims-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.claims-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: #aaa;
+  padding: 4px 8px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.claims-table tr:hover {
+  background: #f9f9f9;
+}
+
+.claim-key {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-weight: 600;
+  color: #6366f1;
+  padding: 6px 8px;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+.claim-value {
+  font-family: 'Menlo', 'Consolas', monospace;
+  color: #333;
+  padding: 6px 8px;
+  word-break: break-all;
+}
