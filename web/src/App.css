@@ -254,3 +254,63 @@
   white-space: pre-wrap;
   word-break: break-all;
 }
+
+/* Token input rows inside endpoint test panels */
+.token-input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.token-input-label {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6366f1;
+}
+
+.token-input {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 10px;
+  color: #333;
+  background: #f4f4f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 8px 10px;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.token-input:focus {
+  border-color: #6366f1;
+  background: #fff;
+}
+
+.token-input::placeholder {
+  color: #bbb;
+}
+
+/* Decoded Claims — API token rows */
+.claims-divider td {
+  padding: 4px 0;
+  border-top: 1px dashed #e8e8e8;
+}
+
+.claim-key--api {
+  color: #22c55e;
+}
+
+.claim-token-value {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 10px;
+  color: #333;
+  word-break: break-all;
+}
+
+.claim-token-empty {
+  font-size: 11px;
+  color: #bbb;
+  font-style: italic;
+}
