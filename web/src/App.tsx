@@ -15,6 +15,80 @@ function statusColor(status: number): string {
   return "#888";
 }
 
+// POST /auth/google — stores returned access + refresh tokens
+function GoogleAuthTest({
+  token,
+  apiUrl,
+  onTokens,
+}: {
+  token: string;
+  apiUrl: string;
+  onTokens: (accessToken: string, refreshToken: string) => void;
+}) {
+  const [result, setResult] = useState<TestResult>(null);
+  const [loading, setLoading] = useState(false);
+  const [networkError, setNetworkError] = useState<string | null>(null);
+
+  async function runTest() {
+    setLoading(true);
+    setResult(null);
+    setNetworkError(null);
+    try {
+      const res = await fetch(`${apiUrl}/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_token: token }),
+      });
+      const body = await res.json().catch(() => null);
+      setResult({ status: res.status, body });
+      if (res.ok && body) {
+        const b = body as { access_token?: string; refresh_token?: string };
+        if (b.access_token && b.refresh_token) {
+          onTokens(b.access_token, b.refresh_token);
+        }
+      }
+    } catch {
+      setNetworkError("Network error - request did not reach the server.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="endpoint-test">
+      <p className="endpoint-test-desc">
+        Signs in an existing user. Returns 403 if no active account exists.
+      </p>
+      <button
+        className="endpoint-test-btn"
+        onClick={runTest}
+        disabled={loading}
+      >
+        {loading ? "Testing..." : "Test"}
+      </button>
+      {networkError && (
+        <p className="endpoint-test-network-error">{networkError}</p>
+      )}
+      {result && (
+        <div className="endpoint-test-result">
+          <span
+            className="endpoint-test-status"
+            style={{ color: statusColor(result.status) }}
+          >
+            {result.status}
+          </span>
+          {result.body !== null && (
+            <pre className="endpoint-test-body">
+              {JSON.stringify(result.body, null, 2)}
+            </pre>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// POST /auth/register — original simple endpoint test
 function EndpointTest({
   token,
   apiUrl,
@@ -41,7 +115,6 @@ function EndpointTest({
         body: JSON.stringify({ id_token: token }),
       });
       const body = await res.json().catch(() => null);
-      console.log(body);
       setResult({ status: res.status, body });
     } catch {
       setNetworkError("Network error - request did not reach the server.");
@@ -57,6 +130,171 @@ function EndpointTest({
         className="endpoint-test-btn"
         onClick={runTest}
         disabled={loading}
+      >
+        {loading ? "Testing..." : "Test"}
+      </button>
+      {networkError && (
+        <p className="endpoint-test-network-error">{networkError}</p>
+      )}
+      {result && (
+        <div className="endpoint-test-result">
+          <span
+            className="endpoint-test-status"
+            style={{ color: statusColor(result.status) }}
+          >
+            {result.status}
+          </span>
+          {result.body !== null && (
+            <pre className="endpoint-test-body">
+              {JSON.stringify(result.body, null, 2)}
+            </pre>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// GET /auth/me — uses Bearer access token
+function MeTest({
+  apiUrl,
+  accessToken,
+  onAccessTokenChange,
+}: {
+  apiUrl: string;
+  accessToken: string;
+  onAccessTokenChange: (v: string) => void;
+}) {
+  const [result, setResult] = useState<TestResult>(null);
+  const [loading, setLoading] = useState(false);
+  const [networkError, setNetworkError] = useState<string | null>(null);
+
+  async function runTest() {
+    setLoading(true);
+    setResult(null);
+    setNetworkError(null);
+    try {
+      const res = await fetch(`${apiUrl}/auth/me`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const body = await res.json().catch(() => null);
+      setResult({ status: res.status, body });
+    } catch {
+      setNetworkError("Network error - request did not reach the server.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="endpoint-test">
+      <p className="endpoint-test-desc">
+        Returns the authenticated user's profile. Requires a valid access token.
+      </p>
+      <div className="token-input-row">
+        <label className="token-input-label">access_token</label>
+        <input
+          className="token-input"
+          type="text"
+          value={accessToken}
+          onChange={(e) => onAccessTokenChange(e.target.value)}
+          placeholder="Paste or run POST /auth/google above to auto-fill"
+          spellCheck={false}
+        />
+      </div>
+      <button
+        className="endpoint-test-btn"
+        onClick={runTest}
+        disabled={loading || !accessToken}
+      >
+        {loading ? "Testing..." : "Test"}
+      </button>
+      {networkError && (
+        <p className="endpoint-test-network-error">{networkError}</p>
+      )}
+      {result && (
+        <div className="endpoint-test-result">
+          <span
+            className="endpoint-test-status"
+            style={{ color: statusColor(result.status) }}
+          >
+            {result.status}
+          </span>
+          {result.body !== null && (
+            <pre className="endpoint-test-body">
+              {JSON.stringify(result.body, null, 2)}
+            </pre>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// POST /auth/refresh — uses refresh token
+function RefreshTest({
+  apiUrl,
+  refreshToken,
+  onRefreshTokenChange,
+  onTokens,
+}: {
+  apiUrl: string;
+  refreshToken: string;
+  onRefreshTokenChange: (v: string) => void;
+  onTokens: (accessToken: string, refreshToken: string) => void;
+}) {
+  const [result, setResult] = useState<TestResult>(null);
+  const [loading, setLoading] = useState(false);
+  const [networkError, setNetworkError] = useState<string | null>(null);
+
+  async function runTest() {
+    setLoading(true);
+    setResult(null);
+    setNetworkError(null);
+    try {
+      const res = await fetch(`${apiUrl}/auth/refresh`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      });
+      const body = await res.json().catch(() => null);
+      setResult({ status: res.status, body });
+      if (res.ok && body) {
+        const b = body as { access_token?: string; refresh_token?: string };
+        if (b.access_token && b.refresh_token) {
+          onTokens(b.access_token, b.refresh_token);
+        }
+      }
+    } catch {
+      setNetworkError("Network error - request did not reach the server.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="endpoint-test">
+      <p className="endpoint-test-desc">
+        Exchanges a refresh token for a new access token and refresh token pair.
+      </p>
+      <div className="token-input-row">
+        <label className="token-input-label">refresh_token</label>
+        <input
+          className="token-input"
+          type="text"
+          value={refreshToken}
+          onChange={(e) => onRefreshTokenChange(e.target.value)}
+          placeholder="Paste or run POST /auth/google above to auto-fill"
+          spellCheck={false}
+        />
+      </div>
+      <button
+        className="endpoint-test-btn"
+        onClick={runTest}
+        disabled={loading || !refreshToken}
       >
         {loading ? "Testing..." : "Test"}
       </button>
@@ -112,6 +350,15 @@ function CopyableBox({ content, label }: { content: string; label: string }) {
 
 function JwtSection({ token, claims }: { token: string; claims: JwtClaims }) {
   const apiUrl = import.meta.env.VITE_API_URL as string;
+
+  const [accessToken, setAccessToken] = useState("");
+  const [refreshToken, setRefreshToken] = useState("");
+
+  function handleTokens(at: string, rt: string) {
+    setAccessToken(at);
+    setRefreshToken(rt);
+  }
+
   const curlCommand =
     `curl -X POST ${apiUrl}/auth/google \\\n` +
     `  -H "Content-Type: application/json" \\\n` +
@@ -119,7 +366,6 @@ function JwtSection({ token, claims }: { token: string; claims: JwtClaims }) {
 
   const formatValue = (v: unknown): string => {
     if (typeof v === "number" && String(v).length === 10) {
-      // Unix timestamp — show both raw and human-readable
       return `${v}  (${new Date(v * 1000).toISOString()})`;
     }
     return String(v);
@@ -148,6 +394,33 @@ function JwtSection({ token, claims }: { token: string; claims: JwtClaims }) {
               <td className="claim-value">{formatValue(value)}</td>
             </tr>
           ))}
+          <tr className="claims-divider">
+            <td colSpan={2}></td>
+          </tr>
+          <tr>
+            <td className="claim-key claim-key--api">access_token</td>
+            <td className="claim-value">
+              {accessToken ? (
+                <span className="claim-token-value">{accessToken}</span>
+              ) : (
+                <span className="claim-token-empty">
+                  — run POST /auth/google to populate
+                </span>
+              )}
+            </td>
+          </tr>
+          <tr>
+            <td className="claim-key claim-key--api">refresh_token</td>
+            <td className="claim-value">
+              {refreshToken ? (
+                <span className="claim-token-value">{refreshToken}</span>
+              ) : (
+                <span className="claim-token-empty">
+                  — run POST /auth/google to populate
+                </span>
+              )}
+            </td>
+          </tr>
         </tbody>
       </table>
 
@@ -160,11 +433,25 @@ function JwtSection({ token, claims }: { token: string; claims: JwtClaims }) {
       />
 
       <h3>Test: POST /auth/google</h3>
-      <EndpointTest
+      <GoogleAuthTest
         token={token}
         apiUrl={apiUrl}
-        endpoint="/auth/google"
-        description="Signs in an existing user. Returns 403 if no active account exists."
+        onTokens={handleTokens}
+      />
+
+      <h3>Test: GET /auth/me</h3>
+      <MeTest
+        apiUrl={apiUrl}
+        accessToken={accessToken}
+        onAccessTokenChange={setAccessToken}
+      />
+
+      <h3>Test: POST /auth/refresh</h3>
+      <RefreshTest
+        apiUrl={apiUrl}
+        refreshToken={refreshToken}
+        onRefreshTokenChange={setRefreshToken}
+        onTokens={handleTokens}
       />
     </div>
   );
